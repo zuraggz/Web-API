@@ -9,6 +9,7 @@ using api.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 
 namespace api.Controllers
 {
@@ -65,6 +66,22 @@ namespace api.Controllers
             var CommentDto =  _mapper.Map<CommentDto>(comment);
             return CreatedAtAction(nameof(GetById), new { id = comment.Id }, CommentDto);
 
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
+        {
+            var comment1 = _mapper.Map<Comment>(updateDto);
+            var comment =  await _commentRepo.UpdateAsync(id, comment1);
+
+            if(comment == null)
+            {
+                return NotFound("Comment Not Found.");
+            }
+
+            var commentDto = _mapper.Map<CommentDto>(comment);
+            return Ok(commentDto);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace api.Mappers
             CreateMap<CommentDto, Comment>();
             CreateMap<CreateCommentDto, Comment>();
             CreateMap<Comment, CreateCommentDto>();
+            CreateMap<UpdateCommentRequestDto, Comment>();
+            CreateMap<Comment,UpdateCommentRequestDto>();
         }
     }
 }
