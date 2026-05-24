@@ -161,3 +161,4 @@ C:\Users\User\Desktop\Web-API\api\bin\Debug\net10.0\runtimes\win-x64\native\Micr
 C:\Users\User\Desktop\Web-API\api\bin\Debug\net10.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\User\Desktop\Web-API\api\bin\Debug\net10.0\AutoMapper.dll
 C:\Users\User\Desktop\Web-API\api\bin\Debug\net10.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\User\Desktop\Web-API\api\obj\Debug\net10.0\api.sourcelink.json

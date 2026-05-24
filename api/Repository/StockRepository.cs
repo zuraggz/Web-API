@@ -53,6 +53,12 @@ namespace api.Repository
             return stock;
         }
 
+        public async Task<bool> StockExists(int id)
+        {
+            return await _context.Stock.AnyAsync(s=>s.Id==id);
+        }
+
+
         public async Task<Stock?> UpdateAsync(int id, UpdateStockDto stockDto)
         {
             var existingStock = await _context.Stock.FirstOrDefaultAsync(x => x.Id == id);
@@ -73,5 +79,7 @@ namespace api.Repository
 
             return existingStock;
         }
+
+        
     }
 }

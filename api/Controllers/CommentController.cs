@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using api.Dtos.Comment;
 using api.Interfaces;
 using api.Models;
+using api.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,13 @@ namespace api.Controllers
     {
         private readonly ICommentRepository _commentRepo;
         private readonly IMapper _mapper;
+        private readonly IStockRepository _stockRepository;
 
-        public CommentController(ICommentRepository commentRepo, IMapper mapper)
+        public CommentController(ICommentRepository commentRepo, IMapper mapper, IStockRepository stockRepository)
         {
             _commentRepo = commentRepo;
             _mapper = mapper;
+            _stockRepository = stockRepository;
         }
 
         [HttpGet]
@@ -31,6 +34,37 @@ namespace api.Controllers
             var commentDtos = _mapper.Map<List<CommentDto>>(comments);
 
             return Ok(commentDtos);
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var result = await _commentRepo.GetByIdAsync(id);
+            if(result == null)
+            {
+                return NotFound();
+            }
+
+            var resultDto = _mapper.Map<CommentDto>(result);
+            return Ok(resultDto);
+        }
+
+        [HttpPost("{stockId}")]
+        public async Task<IActionResult> Create([FromRoute] int stockId, CreateCommentDto commentDto)
+        {
+            if(!await _stockRepository.StockExists(stockId))
+            {
+                return BadRequest("Stock dont exsist");
+            }
+
+            var comment = _mapper.Map<Comment>(commentDto);
+            comment.StockId = stockId;
+            await _commentRepo.CreateAsync(comment);
+
+            var CommentDto =  _mapper.Map<CommentDto>(comment);
+            return CreatedAtAction(nameof(GetById), new { id = comment.Id }, CommentDto);
+
         }
     }
 }
