@@ -31,6 +31,11 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+                
             var comments = await _commentRepo.GetAllAsync();
             var commentDtos = _mapper.Map<List<CommentDto>>(comments);
 
@@ -38,9 +43,13 @@ namespace api.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _commentRepo.GetByIdAsync(id);
             if(result == null)
             {
@@ -51,12 +60,16 @@ namespace api.Controllers
             return Ok(resultDto);
         }
 
-        [HttpPost("{stockId}")]
+        [HttpPost("{stockId:int}")]
         public async Task<IActionResult> Create([FromRoute] int stockId, CreateCommentDto commentDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if(!await _stockRepository.StockExists(stockId))
             {
-                return BadRequest("Stock dont exsist");
+                return BadRequest("The specified stock does not exist.");
             }
 
             var comment = _mapper.Map<Comment>(commentDto);
@@ -69,15 +82,19 @@ namespace api.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var comment1 = _mapper.Map<Comment>(updateDto);
             var comment =  await _commentRepo.UpdateAsync(id, comment1);
 
             if(comment == null)
             {
-                return NotFound("Comment Not Found.");
+                return NotFound("The specified comment could not be found.");
             }
 
             var commentDto = _mapper.Map<CommentDto>(comment);
@@ -85,9 +102,13 @@ namespace api.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var commentModel = await _commentRepo.DeleteAsync(id);
 
             if(commentModel == null)
